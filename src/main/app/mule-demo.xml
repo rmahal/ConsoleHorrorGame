@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:jdbc-ee="http://www.mulesoft.org/schema/mule/ee/jdbc" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/jdbc http://www.mulesoft.org/schema/mule/ee/jdbc/current/mule-jdbc-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8082" doc:name="HTTP Listener Configuration"/>
+    <cxf:configuration name="CXF_Configuration" enableMuleSoapHeaders="true" initializeStaticBusInstance="true" doc:name="CXF Configuration" doc:description="
+&lt;mule xmlns:http=&quot;http://www.mulesoft.org/schema/mule/http&quot; xmlns:cxf=&quot;http://www.mulesoft.org/schema/mule/cxf&quot; xmlns=&quot;http://www.mulesoft.org/schema/mule/core&quot; xmlns:doc=&quot;http://www.mulesoft.org/schema/mule/documentation&quot;
+xmlns:spring=&quot;http://www.springframework.org/schema/beans&quot; 
+xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd&quot;&gt;
+    &lt;http:listener-config name=&quot;HTTP_Listener_Configuration&quot; host=&quot;0.0.0.0&quot; port=&quot;8081&quot; doc:name=&quot;HTTP Listener Configuration&quot;/&gt;
+    &lt;cxf:configuration name=&quot;CXF_Configuration&quot; enableMuleSoapHeaders=&quot;true&quot; initializeStaticB"/>
+    <db:generic-config name="Generic_Database_Configuration" url="jdbc:postgresql://isilo.db.elephantsql.com:5432/hsxmymzc?user=hsxmymzc&amp;password=MA2IOW7yUVohDVKl0haDxrU8luBqEt0E" driverClassName="org.postgresql.Driver" doc:name="Generic Database Configuration"/>
+    <jdbc-ee:postgresql-data-source name="PostgreSQL_Data_Source" user="hsxmymzc" password="MA2IOW7yUVohDVKl0haDxrU8luBqEt0E" url="jdbc:postgres://hsxmymzc:MA2IOW7yUVohDVKl0haDxrU8luBqEt0E@isilo.db.elephantsql.com:5432/hsxmymzc" transactionIsolation="UNSPECIFIED" doc:name="PostgreSQL Data Source"/>
+    <cxf:configuration name="CXF_ConfigurationArrays" enableMuleSoapHeaders="true" initializeStaticBusInstance="true" doc:name="CXF Configuration"/>
+    <flow name="SOAP-GetIndividual">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/IndividualGameResouces" doc:name="HTTP"/>
+        <cxf:jaxws-service configuration-ref="CXF_Configuration" serviceClass="myapp.webservice.IndividualGameResourcesInterface" doc:name="CXF"         />
+        <component class="myapp.webservice.IndividualGameResources" doc:name="Java"/>
+        <logger message="Get individual route: #[payload]" level="INFO" doc:name="Logger#2"/>
+    </flow>
+    <flow name="SOAP-GetArrays">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/ArrayGameResouces" doc:name="HTTP"/>
+        <cxf:jaxws-service configuration-ref="CXF_ConfigurationArrays" serviceClass="myapp.webservice.ArrayGameResourcesInterface" doc:name="CXF"/>
+        <component class="myapp.webservice.ArrayGameResources" doc:name="Java"/>
+        <logger message="Get array route: #[payload]" level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>
